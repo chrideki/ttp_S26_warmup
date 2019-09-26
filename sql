@@ -53,19 +53,36 @@ WHERE staff_id = (SELECT staff_id
 -- EXERCISES - each one has an 'a' and a 'b' part. The 'a' part is the subquery for the 'b' part.
 -- 1a) What is the average length of all the films?
 -- 1b) Return all films with shorter than average length.
-
+SELECT *
+FROM film 
+WHERE length < (SELECT AVG(length) FROM film);
 
 -- 2a) What is the smallest rental rate	in the database?
 -- 2b) Return all films with the lowest rental rate (using a WHERE claus)
-
+SELECT *
+FROM film
+WHERE rental_rate = (SELECT min(rental_rate) FROM film);
 
 -- 3a) What is the average payment amount in the database?
 -- 3b) Return all payments with below average payment amounts
-
+SELECT *
+FROM payment
+WHERE amount < (SELECT AVG(amount) FROM payment);
 
 -- 4a) What is the customer ID who made the earliest payment?		  
--- 4b) Return all purchases from the longest standing customer				
+-- 4b) Return all purchases from the longest standing customer	
+SELECT *
+FROM payment
+WHERE payment_date = (SELECT min(payment_date) FROM payment);			
 
 -- 5a) What rating ('PG', 'G', etc) has the least films?
 -- 5b) Return all films that have the rating that is biggest category 
 -- (ie. rating with the highest count of films)
+SELECT *
+FROM film
+WHERE rating = (SELECT rating 
+                FROM (SELECT rating, COUNT(film_id) as number_of_film
+                        FROM film
+                        GROUP BY rating
+                        ORDER BY number_of_film DESC
+                        LIMIT 1) as film_per_rating);
